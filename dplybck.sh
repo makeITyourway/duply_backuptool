@@ -15,8 +15,11 @@ t_dir=$(dirname $0)
 for t_funcfile in $t_dir/functions/* ; do
         source $t_funcfile
 done
-# parse envs
-while [[ $# -gt 1 ]] ; do
+
+
+
+# parse parameeters
+while [[ $# -ge 1 ]] ; do
 	t_key="$1"
 
 	case $t_key in 
@@ -28,14 +31,23 @@ while [[ $# -gt 1 ]] ; do
 			t_job="$2"
 			shift
 		;;
+		-h|--help)
+			help
+			exit 0
+		;;
 		*)
+			echo -e "unknown option \"$1 $2\" found \n\n"
 			usage
-			shift
+			exit 1
 		;;		
-	
 	esac
+	shift
 done
 
-# source config file
+#verify parameters
+	parse_params "config file" $t_configfile
+	parse_params "job_type" $t_job
 
 
+# start job
+	source $t_dir/job/${t_job}.sh
